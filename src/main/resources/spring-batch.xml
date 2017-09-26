@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:batch="http://www.springframework.org/schema/batch"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/batch
+		http://www.springframework.org/schema/batch/spring-batch.xsd">
+	<batch:step id="abstractStep" abstract="true">
+		<batch:tasklet>
+			<batch:listeners>
+				<batch:listener ref="exceptionHandler" />
+			</batch:listeners>
+		</batch:tasklet>
+	</batch:step>
+	<bean id="exceptionHandler" class="springBatch.ExceptionListener" />
+	<batch:job id="testJob" restartable="true">
+		<batch:step id="testStep">
+			<batch:tasklet>
+				<batch:chunk reader="itemReader" writer="itemWriter" commit-interval="1"/>
+			</batch:tasklet>
+		</batch:step>
+	</batch:job>
+	<bean id="itemReader" class="springBatch.MyItemReader" />
+	<bean id="itemWriter" class="springBatch.MyItemWriter" />
+</beans>
